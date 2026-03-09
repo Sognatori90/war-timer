@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Il Mondo in Guerra — Timer dal 1945</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;600;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #ffffff;
+    color: #111;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    position: relative;
+    background: #fff;
+    border-bottom: 3px solid #cc0000;
+  }
+
+  .hero-label {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 8px;
+    color: #cc0000;
+    margin-bottom: 0.8rem;
+    font-weight: 700;
+  }
+
+  .hero-subtitle {
+    font-size: 1.15rem;
+    color: #666;
+    max-width: 750px;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  /* MAIN TIMER */
+  .main-timer {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(3rem, 8vw, 7rem);
+    color: #cc0000;
+    letter-spacing: 4px;
+    margin-bottom: 0.3rem;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.75; }
+  }
+
+  .timer-labels {
+    display: flex;
+    justify-content: center;
+    gap: clamp(0.8rem, 2vw, 2rem);
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+    font-size: 0.75rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .timer-labels span {
+    min-width: 55px;
+    text-align: center;
+  }
+
+  /* DEATH COUNTERS */
+  .death-counter-section {
+    margin-bottom: 1.5rem;
+    padding: 2rem 2.5rem;
+    background: #f8f8f8;
+    border-radius: 12px;
+    border: 1px solid #eee;
+  }
+
+  .death-counter-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #888;
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+  }
+
+  .death-counter {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    color: #cc0000;
+    letter-spacing: 2px;
+    font-weight: 700;
+  }
+
+  .death-rate {
+    font-size: 1rem;
+    color: #333;
+    margin-top: 0.6rem;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  .death-rate strong {
+    color: #cc0000;
+  }
+
+  .death-note {
+    font-size: 0.7rem;
+    color: #aaa;
+    margin-top: 0.8rem;
+    max-width: 550px;
+    line-height: 1.5;
+  }
+
+  /* VICTIM TIMER */
+  .victim-timer-section {
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem 2.5rem;
+    background: #fff5f5;
+    border-radius: 12px;
+    border: 1px solid #ffdddd;
+  }
+
+  .victim-timer-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #999;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .victim-timer-value {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    color: #cc0000;
+  }
+
+  .victim-timer-desc {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 0.4rem;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    color: #bbb;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+
+  .scroll-hint::after {
+    content: '▼';
+    display: block;
+    text-align: center;
+    margin-top: 0.3rem;
+    color: #cc0000;
+    font-size: 1rem;
+  }
+
+  /* ============ CONFLICTS ============ */
+  .conflicts-section {
+    padding: 4rem 1.5rem;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: 2rem;
+    color: #cc0000;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    margin-bottom: 0.5rem;
+    font-weight: 900;
+  }
+
+  .section-subtitle {
+    text-align: center;
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 3rem;
+  }
+
+  .separator {
+    width: 80px;
+    height: 3px;
+    background: #cc0000;
+    margin: 1rem auto 2.5rem;
+  }
+
+  /* SUMMARY BAR */
+  .summary-bar {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+    padding: 2rem;
+    background: #fafafa;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    margin-bottom: 2.5rem;
+  }
+
+  .summary-item { text-align: center; }
+
+  .summary-value {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 2.2rem;
+    color: #cc0000;
+    font-weight: 700;
+  }
+
+  .summary-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #888;
+    margin-top: 0.3rem;
+  }
+
+  .summary-note {
+    width: 100%;
+    text-align: center;
+    font-size: 0.7rem;
+    color: #bbb;
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+
+  /* CATEGORY HEADER */
+  .category-header {
+    color: #cc0000;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin: 3rem 0 1.2rem 0;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid #f0f0f0;
+    font-weight: 700;
+  }
+
+  /* CONFLICT CARD */
+  .conflict-card {
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-left: 4px solid #cc0000;
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .conflict-card:hover {
+    background: #fff5f5;
+    border-left-color: #ff0000;
+    transform: translateX(5px);
+    box-shadow: 0 4px 20px rgba(204,0,0,0.08);
+  }
+
+  .conflict-info h3 {
+    font-size: 1.3rem;
+    color: #111;
+    margin-bottom: 0.3rem;
+    font-weight: 700;
+  }
+
+  .conflict-parties {
+    font-size: 0.85rem;
+    color: #777;
+    margin-bottom: 0.6rem;
+  }
+
+  .conflict-timer {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.15rem;
+    color: #cc0000;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+  }
+
+  .conflict-start {
+    font-size: 0.75rem;
+    color: #aaa;
+    margin-top: 0.2rem;
+  }
+
+  .conflict-note {
+    font-size: 0.78rem;
+    color: #cc0000;
+    font-style: italic;
+    margin-top: 0.4rem;
+    padding: 0.4rem 0.6rem;
+    background: #fff5f5;
+    border-left: 2px solid #cc0000;
+    border-radius: 0 4px 4px 0;
+    line-height: 1.4;
+  }
+
+  .conflict-stats {
+    text-align: right;
+    min-width: 180px;
+  }
+
+  .conflict-deaths {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.6rem;
+    color: #cc0000;
+    margin-bottom: 0.2rem;
+    font-weight: 700;
+  }
+
+  .conflict-rate {
+    font-size: 0.75rem;
+    color: #888;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
+  /* ============ FOOTER ============ */
+  .footer {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    border-top: 2px solid #f0f0f0;
+    max-width: 1300px;
+    margin: 2rem auto 0;
+  }
+
+  .footer-quote {
+    font-style: italic;
+    color: #888;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    line-height: 1.7;
+  }
+
+  .footer-sources {
+    font-size: 0.75rem;
+    color: #aaa;
+    line-height: 2.2;
+  }
+
+  .footer-sources a {
+    color: #cc0000;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .footer-sources a:hover { text-decoration: underline; }
+
+  .footer-note {
+    font-size: 0.68rem;
+    color: #bbb;
+    margin-top: 1.5rem;
+    line-height: 1.7;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 768px) {
+    .conflict-card {
+      grid-template-columns: 1fr;
+      padding: 1.2rem 1.2rem;
+    }
+    .conflict-stats {
+      text-align: left;
+      display: flex;
+      gap: 1rem;
+      align-items: baseline;
+      min-width: unset;
+    }
+    .conflict-info h3 { font-size: 1.1rem; }
+    .conflict-deaths { font-size: 1.3rem; }
+    .timer-labels span { min-width: 45px; font-size: 0.6rem; }
+    .summary-bar { gap: 1.5rem; }
+    .death-counter-section, .victim-timer-section { padding: 1.5rem 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-label">Il mondo in guerra</div>
+  <div class="hero-subtitle">
+    "Da quando è finita 'l'ultima guerra', il mondo non ha mai smesso di combattere."
+  </div>
+
+  <div class="main-timer" id="mainTimer">00:00:00:00:00:00</div>
+  <div class="timer-labels">
+    <span>Anni</span>
+    <span>Mesi</span>
+    <span>Giorni</span>
+    <span>Ore</span>
+    <span>Minuti</span>
+    <span>Secondi</span>
+  </div>
+
+  <div class="death-counter-section">
+    <div class="death-counter-label">Vittime totali di tutte le guerre dal 1945</div>
+    <div class="death-counter" id="mainDeaths">0</div>
+    <div class="death-rate" id="deathRate"></div>
+    <div class="death-note">
+      Stima cumulativa di tutte le guerre dal 1945 ad oggi (Corea, Vietnam, Congo, Iraq, Afghanistan, Siria, Ucraina, Gaza e tutte le altre — incluse quelle già terminate). Media storica: ~1.400–1.900 morti/giorno.
+    </div>
+  </div>
+
+  <div class="victim-timer-section">
+    <div class="victim-timer-label">Tempo dall'ultima vittima stimata</div>
+    <div class="victim-timer-value" id="lastVictimTimer">00:00:00</div>
+    <div class="victim-timer-desc">Ogni <strong id="secondsPerDeath">--</strong> secondi, in media, una persona muore a causa di un conflitto armato</div>
+  </div>
+
+  <div class="scroll-hint">Conflitti in corso</div>
+</section>
+
+<section class="conflicts-section">
+  <div class="section-title">Conflitti armati attivi</div>
+  <div class="section-subtitle">Ogni timer scorre in tempo reale — Le vittime si aggiornano secondo per secondo</div>
+  <div class="separator"></div>
+
+  <div class="summary-bar">
+    <div class="summary-item">
+      <div class="summary-value" id="totalConflicts">0</div>
+      <div class="summary-label">Conflitti attivi</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-value" id="totalDailyDeaths">0</div>
+      <div class="summary-label">Morti al giorno (attivi)</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-value" id="totalConflictDeaths">0</div>
+      <div class="summary-label">Vittime conflitti attivi</div>
+    </div>
+    <div class="summary-note">
+      Queste vittime sono solo dei conflitti attualmente in corso e sono incluse nel contatore principale di 43+ milioni in alto.
+    </div>
+  </div>
+
+  <div id="conflictsList"></div>
+</section>
+
+<div class="footer">
+  <div class="footer-quote">
+    "Non so con quali armi si combatterà la Terza Guerra Mondiale,<br>
+    ma la Quarta si combatterà con bastoni e pietre."<br>
+    — Albert Einstein
+  </div>
+  <div class="footer-sources">
+    Fonti:
+    <a href="https://acleddata.com" target="_blank">ACLED</a> ·
+    <a href="https://ourworldindata.org/war-and-peace" target="_blank">Our World in Data</a> ·
+    <a href="https://ucdp.uu.se" target="_blank">Uppsala Conflict Data Program</a> ·
+    <a href="https://www.crisisgroup.org" target="_blank">International Crisis Group</a> ·
+    <a href="https://cissm.umd.edu" target="_blank">CISSM Maryland</a> ·
+    <a href="https://en.wikipedia.org/wiki/List_of_ongoing_armed_conflicts" target="_blank">Wikipedia</a>
+  </div>
+  <div class="footer-note">
+    I dati sui morti sono stime orientative basate su fonti pubbliche e accademiche (Milton Leitenberg, CISSM, Uppsala UCDP, ACLED).
+    Il contatore principale (43+ milioni) include tutte le guerre dal 1945, anche quelle terminate.
+    I contatori dei singoli conflitti mostrano solo le guerre attualmente in corso.
+    I ritmi di incremento sono basati sulle medie giornaliere stimate — non rappresentano dati in tempo reale.
+    Ultimo aggiornamento dati: Marzo 2026.
+  </div>
+</div>
+
+<script>
+// ============================
+// DATA
+// ============================
+const WAR_START = new Date('1945-09-02T00:00:00Z');
+
+// Total deaths from ALL wars 1945 to March 2026: ~43,000,000
+// Sources: Milton Leitenberg (CISSM) estimated ~41M for 1945-2000
+// + post-2000 conflicts (Iraq, Afghanistan, Syria, Yemen, Congo, Ukraine, Sudan, Gaza, etc.) ~5-7M
+// = ~46-48M total. We use 45,000,000 as a balanced mid-range estimate.
+const BASE_DEATHS = 45000000;
+const BASE_DATE = new Date('2026-03-09T00:00:00Z');
+
+// Current global deaths per day from active conflicts: ~1,500/day
+// (sum of all active conflict daily rates listed below ≈ 1,085 + unreported/indirect ≈ 1,500)
+const DEATHS_PER_DAY = 1500;
+const DEATHS_PER_SECOND = DEATHS_PER_DAY / 86400;
+const SECONDS_PER_DEATH = 86400 / DEATHS_PER_DAY;
+
+const conflicts = [
+  { category: "Guerre maggiori — oltre 10.000 morti/anno", items: [
+    {
+      name: "USA + Israele vs Iran",
+      parties: "Stati Uniti + Israele → Repubblica Islamica dell'Iran",
+      note: "Secondo Trump durerà «4-5 settimane». Gli esperti la pensano diversamente.",
+      start: "2026-02-28",
+      baseDeaths: 1500,
+      deathsPerDay: 155,
+    },
+    {
+      name: "Russia vs Ucraina",
+      parties: "Russia → Ucraina (supportata da NATO/Occidente)",
+      start: "2022-02-24",
+      baseDeaths: 500000,
+      deathsPerDay: 300,
+    },
+    {
+      name: "Israele vs Gaza",
+      parties: "Israele → Hamas / Popolazione civile di Gaza",
+      start: "2023-10-07",
+      baseDeaths: 100000,
+      deathsPerDay: 140,
+    },
+    {
+      name: "Guerra civile in Sudan",
+      parties: "Esercito sudanese (SAF) vs Forze di Supporto Rapido (RSF)",
+      start: "2023-04-15",
+      baseDeaths: 150000,
+      deathsPerDay: 220,
+    },
+    {
+      name: "Guerra civile in Myanmar",
+      parties: "Giunta militare (Tatmadaw) vs Resistenza civile + milizie etniche",
+      start: "2021-02-01",
+      baseDeaths: 60000,
+      deathsPerDay: 40,
+    },
+    {
+      name: "Guerra al narcotraffico — Messico",
+      parties: "Stato messicano vs Cartelli (Sinaloa, CJNG, ecc.)",
+      start: "2006-12-11",
+      baseDeaths: 350000,
+      deathsPerDay: 20,
+    },
+  ]},
+  { category: "Guerre — 1.000–10.000 morti/anno", items: [
+    {
+      name: "RD Congo (est)",
+      parties: "Esercito congolese vs M23 (Ruanda) + FDLR + CODECO + ADF",
+      start: "2022-01-01",
+      baseDeaths: 50000,
+      deathsPerDay: 20,
+    },
+    {
+      name: "Mali — Sahel",
+      parties: "Giunta militare + Wagner vs JNIM + Stato Islamico del Sahel",
+      start: "2012-01-16",
+      baseDeaths: 30000,
+      deathsPerDay: 10,
+    },
+    {
+      name: "Burkina Faso",
+      parties: "Giunta militare vs Jihadisti (JNIM + IS)",
+      start: "2015-01-01",
+      baseDeaths: 25000,
+      deathsPerDay: 12,
+    },
+    {
+      name: "Somalia",
+      parties: "Governo federale + AMISOM/USA vs Al-Shabaab + ISIS-Somalia",
+      start: "2006-01-01",
+      baseDeaths: 50000,
+      deathsPerDay: 8,
+    },
+    {
+      name: "Yemen",
+      parties: "Governo + Arabia Saudita vs Houthi (supportati dall'Iran)",
+      start: "2014-09-16",
+      baseDeaths: 380000,
+      deathsPerDay: 8,
+    },
+    {
+      name: "Haiti — violenza delle gang",
+      parties: "Gang armate vs Stato (quasi inesistente)",
+      start: "2020-01-01",
+      baseDeaths: 15000,
+      deathsPerDay: 16,
+    },
+    {
+      name: "Colombia",
+      parties: "Stato vs ELN + dissidenti FARC + cartelli",
+      start: "1964-05-27",
+      baseDeaths: 220000,
+      deathsPerDay: 6,
+    },
+    {
+      name: "Nigeria — Boko Haram / ISWAP",
+      parties: "Esercito nigeriano vs Boko Haram + ISWAP + banditismo",
+      start: "2009-07-26",
+      baseDeaths: 80000,
+      deathsPerDay: 8,
+    },
+    {
+      name: "Niger — Sahel",
+      parties: "Giunta militare vs Jihadisti",
+      start: "2015-01-01",
+      baseDeaths: 8000,
+      deathsPerDay: 4,
+    },
+  ]},
+  { category: "Conflitti armati — 100–999 morti/anno", items: [
+    {
+      name: "Siria (residuo guerra civile)",
+      parties: "Fazioni ribelli vs resti regime + curdi vs Turchia + ISIS",
+      start: "2011-03-15",
+      baseDeaths: 500000,
+      deathsPerDay: 4,
+    },
+    {
+      name: "Afghanistan",
+      parties: "Talebani al potere vs ISIS-K",
+      start: "2001-10-07",
+      baseDeaths: 200000,
+      deathsPerDay: 4,
+    },
+    {
+      name: "Etiopia (Amhara / Oromia)",
+      parties: "Governo federale vs milizie regionali + tensioni con Eritrea",
+      start: "2018-01-01",
+      baseDeaths: 100000,
+      deathsPerDay: 6,
+    },
+    {
+      name: "Pakistan (TTP)",
+      parties: "Esercito pakistano vs Talebani pakistani (TTP) in Balochistan",
+      start: "2004-01-01",
+      baseDeaths: 70000,
+      deathsPerDay: 3,
+    },
+    {
+      name: "Mozambico — Cabo Delgado",
+      parties: "Esercito + Ruanda vs Insurrezione jihadista",
+      start: "2017-10-05",
+      baseDeaths: 5000,
+      deathsPerDay: 2,
+    },
+    {
+      name: "Ecuador — guerra ai narcos",
+      parties: "Stato vs cartelli narco (Los Choneros, Los Lobos, ecc.)",
+      start: "2024-01-08",
+      baseDeaths: 3000,
+      deathsPerDay: 4,
+    },
+    {
+      name: "Camerun — crisi anglofona",
+      parties: "Esercito camerunese vs separatisti anglofoni",
+      start: "2017-09-22",
+      baseDeaths: 6000,
+      deathsPerDay: 2,
+    },
+    {
+      name: "Iraq (residuo ISIS)",
+      parties: "Governo iracheno + milizie vs cellule ISIS",
+      start: "2017-01-01",
+      baseDeaths: 12000,
+      deathsPerDay: 2,
+    },
+  ]},
+];
+
+// ============================
+// UTILITIES
+// ============================
+function getTimeDiff(startDate) {
+  const now = new Date();
+  const start = new Date(startDate);
+  let years = now.getFullYear() - start.getFullYear();
+  let months = now.getMonth() - start.getMonth();
+  let days = now.getDate() - start.getDate();
+  let hours = now.getHours() - start.getHours();
+  let minutes = now.getMinutes() - start.getMinutes();
+  let seconds = now.getSeconds() - start.getSeconds();
+  if (seconds < 0) { seconds += 60; minutes--; }
+  if (minutes < 0) { minutes += 60; hours--; }
+  if (hours < 0) { hours += 24; days--; }
+  if (days < 0) {
+    const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    days += prevMonth.getDate();
+    months--;
+  }
+  if (months < 0) { months += 12; years--; }
+  return { years, months, days, hours, minutes, seconds };
+}
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function formatMainTimer(d) {
+  return `${pad(d.years)}:${pad(d.months)}:${pad(d.days)}:${pad(d.hours)}:${pad(d.minutes)}:${pad(d.seconds)}`;
+}
+
+function formatCompactTimer(d) {
+  let p = [];
+  if (d.years > 0) p.push(`${d.years}a`);
+  if (d.months > 0) p.push(`${d.months}m`);
+  p.push(`${d.days}g`);
+  p.push(`${pad(d.hours)}:${pad(d.minutes)}:${pad(d.seconds)}`);
+  return p.join(' ');
+}
+
+function fmt(n) {
+  return Math.floor(n).toLocaleString('it-IT');
+}
+
+function getConflictDeaths(c) {
+  const now = new Date();
+  const msFromBase = now - BASE_DATE;
+  const daysFromBase = msFromBase / 86400000;
+  return c.baseDeaths + (daysFromBase * c.deathsPerDay);
+}
+
+// ============================
+// RENDER
+// ============================
+function renderConflicts() {
+  const el = document.getElementById('conflictsList');
+  let html = '';
+  let totalDaily = 0;
+  let idx = 0;
+
+  conflicts.forEach(cat => {
+    html += `<div class="category-header">${cat.category}</div>`;
+    cat.items.forEach(c => {
+      totalDaily += c.deathsPerDay;
+      idx++;
+      const d = new Date(c.start);
+      const dateStr = d.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+      const noteHtml = c.note ? `<div class="conflict-note">${c.note}</div>` : '';
+      html += `
+        <div class="conflict-card">
+          <div class="conflict-info">
+            <h3>${c.name}</h3>
+            <div class="conflict-parties">${c.parties}</div>
+            <div class="conflict-timer" id="ct-${idx}">—</div>
+            <div class="conflict-start">Inizio: ${dateStr}</div>
+            ${noteHtml}
+          </div>
+          <div class="conflict-stats">
+            <div class="conflict-deaths" id="cd-${idx}">0</div>
+            <div class="conflict-rate">~${fmt(c.deathsPerDay)} morti/giorno</div>
+          </div>
+        </div>`;
+    });
+  });
+
+  el.innerHTML = html;
+  document.getElementById('totalConflicts').textContent = idx;
+  document.getElementById('totalDailyDeaths').textContent = '~' + fmt(totalDaily);
+  document.getElementById('secondsPerDeath').textContent = SECONDS_PER_DEATH.toFixed(1);
+}
+
+// ============================
+// SMOOTH UPDATE (100ms)
+// ============================
+let lastVictimTimestamp = Date.now();
+
+function update() {
+  const now = new Date();
+
+  // Hero timer
+  document.getElementById('mainTimer').textContent = formatMainTimer(getTimeDiff(WAR_START));
+
+  // Main death counter (all wars since 1945)
+  const msFromBase = now - BASE_DATE;
+  const totalDeaths = BASE_DEATHS + (msFromBase / 1000 * DEATHS_PER_SECOND);
+  document.getElementById('mainDeaths').textContent = fmt(totalDeaths);
+
+  // Today counter
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const secToday = (now - todayStart) / 1000;
+  const todayDeaths = Math.floor(secToday * DEATHS_PER_SECOND);
+  document.getElementById('deathRate').innerHTML =
+    `<strong>+${fmt(todayDeaths)}</strong> vittime solo oggi · ~${fmt(DEATHS_PER_DAY)} al giorno`;
+
+  // "Time since last victim" cycling timer
+  const cycleMs = SECONDS_PER_DEATH * 1000;
+  const elapsed = Date.now() % cycleMs;
+  const remaining = cycleMs - elapsed;
+  const remSec = remaining / 1000;
+  const remMin = Math.floor(remSec / 60);
+  const remS = Math.floor(remSec % 60);
+  const remMs = Math.floor((remSec % 1) * 100);
+  document.getElementById('lastVictimTimer').textContent =
+    `${pad(remMin)}:${pad(remS)}:${pad(remMs)}`;
+
+  // Conflict timers and deaths
+  let idx = 0;
+  let totalActiveDeaths = 0;
+  conflicts.forEach(cat => {
+    cat.items.forEach(c => {
+      idx++;
+      document.getElementById(`ct-${idx}`).textContent = formatCompactTimer(getTimeDiff(c.start));
+      const deaths = getConflictDeaths(c);
+      totalActiveDeaths += deaths;
+      document.getElementById(`cd-${idx}`).textContent = fmt(deaths);
+    });
+  });
+
+  document.getElementById('totalConflictDeaths').textContent = fmt(totalActiveDeaths);
+}
+
+// ============================
+// INIT
+// ============================
+renderConflicts();
+update();
+setInterval(update, 100); // smooth 100ms updates
+</script>
+
+</body>
+</html>
